@@ -7,6 +7,7 @@ priority -50
 # looks, it is defaulted to junit4, setting this option to 3 will remove the
 # @Test annotation from the method
 
+# global python functions {{{1 #
 global !p
 def junit(snip):
 	if snip.opt("g:ultisnips_java_junit", "") == "3":
@@ -33,15 +34,9 @@ def mixedCase(word):
 	return word[0].lower() + word[1:]
 
 endglobal
+# }}} #
 
-snippet sleep "try sleep catch" b
-try {
-	Thread.sleep(${1:1000});
-} catch (InterruptedException e){
-	e.printStackTrace();
-}
-endsnippet
-
+# initial {{{1 #
 snippet /i|n/ "new primitive or int" br
 ${1:int} ${2:i} = ${3:1};
 $0
@@ -51,110 +46,19 @@ snippet /o|v/ "new Object or variable" br
 ${1:Object} ${2:var} = new $1($3);
 endsnippet
 
-snippet f "field" b
-${1:private} ${2:String} ${3:`!p snip.rv = t[2].lower()`};
+snippet constant-string "constant string" b
+public static final String ${1:var} = "$2";$0
 endsnippet
 
-snippet ab "abstract" b
-abstract $0
+snippet constant "constant" b
+public static final ${1:String} ${2:var} = $3;$0
 endsnippet
+# }}} #
 
-snippet as "assert" b
-assert ${1:test}${2/(.+)/(?1: \: ")/}${2:Failure message}${2/(.+)/(?1:")/};
-endsnippet
-
-snippet at "assert true" b
-assertTrue(${1:actual});
-endsnippet
-
-snippet af "assert false" b
-assertFalse(${1:actual});
-endsnippet
-
-snippet ae "assert equals" b
-assertEquals(${1:expected}, ${2:actual});
-endsnippet
-
-snippet br "break"
-break;
-
-endsnippet
-
-snippet cs "case" b
-case $1:
-	$2
-$0
-endsnippet
-
-snippet ca "catch" b
-catch (${1:Exception} ${2:e})`!p nl(snip)`{
+# class {{{1 #
+snippet main "method (main)" b
+public static void main(String[] args)`!p nl(snip)`{
 	$0
-}
-endsnippet
-
-snippet cle "class extends" b
-public class ${1:`!p
-snip.rv = snip.basename or "untitled"`} ${2:extends ${3:Parent} }${4:implements ${5:Interface} }{
-	$0
-}
-endsnippet
-
-snippet clc "class with constructor, fields, setter and getters" b
-public class `!p
-snip.rv = snip.basename or "untitled"` {
-`!p
-args = getArgs(t[1])
-if len(args) == 0: snip.rv = ""
-for i in args:
-	snip.rv += "\n\tprivate " + i[0] + " " + i[1]+ ";"
-if len(args) > 0:
-	snip.rv += "\n"`
-	public `!p snip.rv = snip.basename or "unknown"`($1) {`!p
-args = getArgs(t[1])
-for i in args:
-	snip.rv += "\n\t\tthis." + i[1] + " = " + i[1] + ";"
-if len(args) == 0:
-	snip.rv += "\n"`
-	}$0
-`!p
-args = getArgs(t[1])
-if len(args) == 0: snip.rv = ""
-for i in args:
-	snip.rv += "\n\tpublic void set" + camel(i[1]) + "(" + i[0] + " " + i[1] + ") {\n" + "\
-	\tthis." + i[1] + " = " + i[1] + ";\n\t}\n"
-
-	snip.rv += "\n\tpublic " + i[0] + " get" + camel(i[1]) + "() {\n\
-	\treturn " + i[1] + ";\n\t}\n"
-`
-}
-endsnippet
-
-snippet clc "class with constructor, with field names" b
-public class `!p
-snip.rv = snip.basename or "untitled"` {
-`!p
-args = getArgs(t[1])
-for i in args:
-	snip.rv += "\n\tprivate " + i[0] + " " + i[1]+ ";"
-if len(args) > 0:
-	snip.rv += "\n"`
-	public `!p snip.rv = snip.basename or "unknown"`($1) {`!p
-args = getArgs(t[1])
-for i in args:
-	snip.rv += "\n\t\tthis.%s = %s;" % (i[1], i[1])
-if len(args) == 0:
-	snip.rv += "\n"`
-	}
-}
-endsnippet
-
-snippet clc "class and constructor" b
-public class `!p
-snip.rv = snip.basename or "untitled"` {
-
-	public `!p snip.rv = snip.basename or "untitled"`($2) {
-		$0
-	}
 }
 endsnippet
 
@@ -165,17 +69,107 @@ snip.rv = snip.basename or "untitled"`} {
 }
 endsnippet
 
-snippet cos "constant string" b
-public static final String ${1:var} = "$2";$0
-endsnippet
-
-snippet co "constant" b
-public static final ${1:String} ${2:var} = $3;$0
-endsnippet
-
-snippet de "default" b
-default:
+snippet m  "method" b
+${1:public} ${2:void} ${3:method}(${4:Type args}) {
 	$0
+}
+
+endsnippet
+
+snippet md "Method With javadoc" b
+/**
+ * ${7:Short Description}`!p
+for i in getArgs(t[4]):
+	snip.rv += "\n\t * @param " + i[1] + " usage..."`
+ *`!p
+if "throws" in t[5]:
+	snip.rv = "\n\t * @throws " + t[6]
+else:
+	snip.rv = ""``!p
+if not "void" in t[2]:
+	snip.rv = "\n\t * @return object"
+else:
+	snip.rv = ""`
+ **/
+${1:public} ${2:void} ${3:method}($4) ${5:throws ${6:Exception} }{
+	$0
+}
+endsnippet
+
+snippet cl-extends "class extends" b
+public class ${1:`!p
+snip.rv = snip.basename or "untitled"`} ${2:extends ${3:Parent} }${4:implements ${5:Interface} }{
+	$0
+}
+endsnippet
+
+snippet f "field" b
+${1:private} ${2:String} ${3:fieldName`};
+endsnippet
+
+snippet abstract-class "abstract class" b
+abstract class ${1:className} {
+	${2://attributes and methods}
+}
+
+endsnippet
+
+snippet abstract-method "abstract method" b
+abstract ${1:void} ${2:methodName};
+endsnippet
+
+snippet interface "interface" b
+interface ${1:`!p snip.rv = snip.basename or "untitled"`} ${2:extends ${3:Parent} }{
+	$0
+}
+endsnippet
+
+snippet cc "constructor call or setter body"
+this.${1:var} = $1;
+endsnippet
+
+snippet cn "Constructor" b
+public `!p snip.rv = snip.basename or "untitled"`(${1:}) {
+	$0
+}
+endsnippet
+
+snippet ex-anonymous-class "Example for anonymous class" b
+class outerClass {
+
+	// defining anonymous class
+	object1 = new Type(parameterList) {
+		// body of the anonymous class
+	};
+}
+endsnippet
+
+
+# }}} #
+
+# assert {{{1 #
+snippet assert "assert" b
+assert ${1:test}${2/(.+)/(?1: \: ")/}${2:Failure message}${2/(.+)/(?1:")/};
+endsnippet
+
+snippet assert-true "assert true" b
+assertTrue(${1:actual});
+endsnippet
+
+snippet assert-false "assert false" b
+assertFalse(${1:actual});
+endsnippet
+
+snippet assert-equals "assert equals" b
+assertEquals(${1:expected}, ${2:actual});
+endsnippet
+# 1}}} #
+
+# control flow {{{1 #
+snippet if "if" b
+if ($1)`!p nl(snip)`{
+	$0${VISUAL}
+}
 endsnippet
 
 snippet elif "else if"
@@ -189,9 +183,36 @@ else`!p nl(snip)`{
 	$0${VISUAL}
 }
 endsnippet
+snippet switch "switch" b
+switch ($1)`!p nl(snip)`{
+	case $2: $0
+}
+endsnippet
 
-snippet fi "final" b
-final $0
+snippet case "case" b
+case $1:
+	$2
+$0
+endsnippet
+# 1}}} #
+
+# loops {{{ #
+snippet while "while" b
+while ($1)`!p nl(snip)`{
+	$0
+}
+endsnippet
+
+snippet do-while "do-while" b
+do {
+	$0
+} while ($1);
+endsnippet
+
+snippet for "for" b
+for ($1; $2; $3)`!p nl(snip)`{
+	$0
+}
 endsnippet
 
 snippet fore "for (each)" b
@@ -205,19 +226,66 @@ for (int ${1:i} = 0; $1 < ${2:10}; $1++)`!p nl(snip)`{
 	$0
 }
 endsnippet
+# }}} loops #
 
-snippet for "for" b
-for ($1; $2; $3)`!p nl(snip)`{
+# exception {{{1 #
+snippet catch "catch" b
+catch (${1:Exception} ${2:e})`!p nl(snip)`{
 	$0
 }
 endsnippet
 
-snippet if "if" b
-if ($1)`!p nl(snip)`{
-	$0${VISUAL}
+snippet try "try/catch" b
+try {
+	$1${VISUAL}
+} catch(${2:Exception} ${3:e}){
+	${4:e.printStackTrace();}
 }
+
 endsnippet
 
+snippet try-finally "try/catch/finally" b
+try {
+	$1${VISUAL}
+} catch (${2:Exception} ${3:e}) {
+	${4:e.printStackTrace();}
+} finally {
+	${5:finally block}
+}
+
+endsnippet
+
+snippet try-muti "try catch mutiple exception" b
+try {
+	$1${VISUAL}
+} catch (${2:ExceptionType1} | ${3:ExceptionType2} ${4:e}) {
+	${5:e.printStackTrace();}
+}
+
+endsnippet
+
+snippet try-resource "try with resource" b
+try (${1:resource declaration}) {
+	${2:use of the resource}
+} catch (${3:Exception} ${4:e}) {
+	${5:e.printStackTrace();}
+}
+
+endsnippet
+
+snippet throws "method throws" b
+${1:accessModifier} ${2:void} ${3:methodName}(${4:args}) throws ${5:ExceptionType1, ExceptionType2 …} {
+	$0
+}
+
+endsnippet
+
+snippet throw "throw" b
+throw ${1:throwableObject};
+endsnippet
+# }}} #
+
+# import {{{ #
 snippet imt "import junit_framework_TestCase;"  b
 import junit.framework.TestCase;
 $0
@@ -225,54 +293,6 @@ endsnippet
 
 snippet im "import"  b
 import ${1:java}.${2:util}.$0;
-endsnippet
-
-snippet in "interface" b
-interface ${1:`!p snip.rv = snip.basename or "untitled"`} ${2:extends ${3:Parent} }{
-	$0
-}
-endsnippet
-
-snippet cc "constructor call or setter body"
-this.${1:var} = $1;
-endsnippet
-
-snippet list "Collections List" b
-List<${1:String}> ${2:list} = new ${3:Array}List<$1>();
-endsnippet
-
-snippet map "Collections Map" b
-Map<${1:String}, ${2:String}> ${3:map} = new ${4:Hash}Map<$1, $2>();
-endsnippet
-
-snippet set "Collections Set" b
-Set<${1:String}> ${2:set} = new ${3:Hash}Set<$1>();
-endsnippet
-
-snippet /Str?|str/ "String" br
-String $0
-endsnippet
-
-snippet cn "Constructor" b
-public `!p snip.rv = snip.basename or "untitled"`(${1:}) {
-	$0
-}
-endsnippet
-
-snippet cn "constructor, \w fields + assigments" b
-	`!p
-args = getArgs(t[1])
-for i in args:
-	snip.rv += "\n\tprivate " + i[0] + " " + i[1]+ ";"
-if len(args) > 0:
-	snip.rv += "\n"`
-public `!p snip.rv = snip.basename or "unknown"`($1) {`!p
-args = getArgs(t[1])
-for i in args:
-	snip.rv += "\n\t\tthis.%s = %s;" % (i[1], i[1])
-if len(args) == 0:
-	snip.rv += "\n"`
-}
 endsnippet
 
 snippet j.b "java_beans_" i
@@ -294,73 +314,17 @@ endsnippet
 snippet j.u "java_util_"  i
 java.util.
 endsnippet
+# }}} import #
 
-snippet main "method (main)" b
-public static void main(String[] args)`!p nl(snip)`{
-	$0
-}
+# collections {{{ #
+snippet list "Collections List" b
+${1:Array}List<${2:String}> ${3:listName} = new ${1:Array}List<$2>();
 endsnippet
 
-snippet try "try/catch" b
-try {
-	$1${VISUAL}
-} catch(${2:Exception} ${3:e}){
-	${4:e.printStackTrace();}
-}
+snippet iterator "new Iterator" b
+Iterator<${1:Integer}> ${2:iterName} = ${3:objName}.iterator();
 endsnippet
-
-snippet mt "method throws" b
-${1:private} ${2:void} ${3:method}($4) ${5:throws $6 }{
-	$0
-}
-endsnippet
-
-snippet m  "method" b
-${1:private} ${2:void} ${3:method}($4) {
-	$0
-}
-endsnippet
-
-snippet md "Method With javadoc" b
-/**
- * ${7:Short Description}`!p
-for i in getArgs(t[4]):
-	snip.rv += "\n\t * @param " + i[1] + " usage..."`
- *`!p
-if "throws" in t[5]:
-	snip.rv = "\n\t * @throws " + t[6]
-else:
-	snip.rv = ""``!p
-if not "void" in t[2]:
-	snip.rv = "\n\t * @return object"
-else:
-	snip.rv = ""`
- **/
-${1:public} ${2:void} ${3:method}($4) ${5:throws $6 }{
-	$0
-}
-endsnippet
-
-snippet /get(ter)?/ "getter" br
-public ${1:String} get${2:Name}() {
-	return `!p snip.rv = mixedCase(t[2])`;
-}
-endsnippet
-
-snippet /set(ter)?/ "setter" br
-public void set${1:Name}(${2:String} `!p snip.rv = mixedCase(t[1])`) {
-	this.`!p snip.rv = mixedCase(t[1])` = `!p snip.rv = mixedCase(t[1])`;
-}
-endsnippet
-
-snippet /se?tge?t|ge?tse?t|gs/ "setter and getter" br
-public void set${1:Name}(${2:String} `!p snip.rv = mixedCase(t[1])`) {
-	this.`!p snip.rv = mixedCase(t[1])` = `!p snip.rv = mixedCase(t[1])`;
-}`!p snip.rv += "\n"`
-public $2 get$1() {
-	return `!p snip.rv = mixedCase(t[1])`;
-}
-endsnippet
+# }}} collections #
 
 snippet pa "package" b
 package $0
@@ -374,62 +338,9 @@ snippet pl "println"  b
 System.out.println($1);$0
 endsnippet
 
-snippet pr "private" b
-private $0
+snippet pf "printlf"  b
+System.out.printf($1);$0
 endsnippet
 
-snippet po "protected" b
-protected $0
-endsnippet
-
-snippet pu "public" b
-public $0
-endsnippet
-
-snippet re "return" b
-return $0
-endsnippet
-
-snippet st "static"
-static $0
-endsnippet
-
-snippet sw "switch" b
-switch ($1)`!p nl(snip)`{
-	case $2: $0
-}
-endsnippet
-
-snippet sy "synchronized"
-synchronized $0
-endsnippet
-
-snippet tc "test case"
-public class ${1:`!p snip.rv = snip.basename or "untitled"`} extends ${2:TestCase}`!p nl(snip)`{
-	$0
-}
-endsnippet
-
-snippet t "test" b
-`!p junit(snip)`public void test${1:Name}() {
-	$0
-}
-endsnippet
-
-snippet tt "test throws" b
-`!p junit(snip)`public void test${1:Name}() ${2:throws Exception }{
-	$0
-}
-endsnippet
-
-snippet th "throw" b
-throw new $0
-endsnippet
-
-snippet wh "while" b
-while ($1)`!p nl(snip)`{
-	$0
-}
-endsnippet
 
 # vim:ft=snippets:

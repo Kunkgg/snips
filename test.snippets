@@ -1,0 +1,227 @@
+# This file contains asciidoc snippets.
+
+# sligthly lower priority than everything else since specialized versions
+# should overwrite. The user needs to adjust her priority in her snippets to
+# ~-55 so that other filetypes will still overwrite.
+priority -55
+
+snippet meta "asciidoc meta header" b
+= ${1:The Article Title}
+:toc:
+:icon: font
+gk07 <gk_520@hotmail.com>
+${2:v1.0}, `!v strftime("%Y-%m-%d")`
+// v{revnumber}, {docdate}
+:library: Asciidoctor
+ifdef::asciidoctor[]
+:source-highlighter: coderay
+endif::asciidoctor[]
+:idprefix:
+:stylesheet: asciidoc.css
+:imagesdir: images
+:includesdir: includes
+//:title-logo-image: image:logo.png[pdfwidth=3.00in,align=center]
+//:backend: docbook45
+//:backend: html5
+//:doctype: book
+//:sectids!:
+:plus: &#43;
+
+// refs
+:url-github: https://github.com/Kunkgg
+//:url-blog: http-to-my-blog
+
+endsnippet
+
+snippet ! "simple sectionless document"
+${1:This is the optional preamble (an untitled section body). Useful for
+writing simple sectionless documents consisting only of a preamble.}
+
+:numbered!:
+[abstract]
+== Example Abstract
+The optional abstract (one or more paragraphs) goes here.
+
+This document is an AsciiDoc article skeleton containing briefly
+annotated element placeholders plus a couple of example index entries
+and footnotes.
+
+:numbered:
+
+== The First Section
+
+[[X1]]
+=== Sub-section with Anchor
+Sub-section at level 2.
+
+==== A Nested Sub-section
+Sub-section at level 3.
+
+===== Yet another nested Sub-section
+Sub-section at level 4.
+
+This is the maximum sub-section depth supported by the distributed
+AsciiDoc configuration.
+footnote:[A second example footnote.]
+
+== The Second Section
+
+Article sections are at level 1 and can contain sub-sections nested up
+to four deep.
+
+An example link to anchor at start of the <<X1,first sub-section>>.
+indexterm:[Second example index entry]
+endsnippet
+
+snippet gloassary "example glossary" b
+[glossary]
+== Example Glossary
+Glossaries are optional. Glossaries entries are an example of a style
+of AsciiDoc labeled lists.
+
+[glossary]
+A glossary term::
+  The corresponding (indented) definition.
+
+A second glossary term::
+  The corresponding (indented) definition.
+
+endsnippet
+
+snippet footnote "example footnote" b
+${1:This is a sentence that need footnote.}
+footnote:[${2:An example footnote}]
+endsnippet
+
+snippet bib "example bibliography" b
+
+An example link to a bibliography entry <<taoup>>.
+
+[bibliography]
+== Example Bibliography
+The bibliography list is a style of AsciiDoc bulleted list.
+
+[bibliography]
+- [[[taoup]]] Eric Steven Raymond. 'The Art of Unix
+  Programming'. Addison-Wesley. ISBN 0-13-142901-9.
+- [[[walsh-muellner]]] Norman Walsh & Leonard Muellner.
+  'DocBook - The Definitive Guide'. O'Reilly & Associates. 1999.
+  ISBN 1-56592-580-7.
+endsnippet
+
+snippet block-text "text block" b
+[[${1:accross-id}]]
+.${2:title}
+****
+${3:block content...}
+****
+endsnippet
+
+snippet example "example block" b
+.${1:exmaple title}
+====
+${2:Lorum ipum...}
+====
+
+endsnippet
+
+snippet TIP "TIP Admonitions" b
+[TIP]
+====
+${1:Pro tip...}
+====
+
+endsnippet
+
+snippet NOTE "NOTE Admonitions" b
+[NOTE]
+====
+${1:Note notes...}
+====
+
+endsnippet
+
+snippet IMP "IMPORTANT Admonitions" b
+[IMPORTANT]
+====
+${1:Some important...}
+====
+
+endsnippet
+
+snippet WARN "WARNING Admonitions" b
+[WARNING]
+====
+${1:Some warning...}
+====
+
+endsnippet
+
+snippet CAUTION "CAUTION Admonitions" b
+[CAUTION]
+====
+${1:Some caution...}
+====
+
+endsnippet
+
+snippet link "link" b
+${1:link-url}[${2:link-text}] $0
+endsnippet
+
+snippet image-inline "inline image" w
+image:${1:image-file-path}[${2:image-alt}] $0
+endsnippet
+
+snippet image-block "block image" b
+.${1:figure title}
+image:${2:image-file-path}[${3:image-alt}] $0
+endsnippet
+
+snippet include "include from ./includes dir" b
+include::includes/${1:file-path-in-includesdir}[]
+endsnippet
+
+snippet code "source code block" b
+.${1:source code title}
+[source, ${2:lang}]
+----
+${3: code here...}
+----
+
+endsnippet
+
+snippet quote "quote block" b
+[quote, ${1:author}, ${2:The Cite of Author}]
+____
+${3:When you have eliminated all which is impossible, then whatever remains, however improbable, must be the truth.}
+____
+
+endsnippet
+
+snippet litera "litera block" b
+....
+${1:Litera contents here.}
+....
+
+endsnippet
+
+snippet table "example simple table" b
+.${1:table title}
+[cols="${2:2,5,3}", options=header]
+|===
+|Type
+|Range
+|Default
+
+|boolean
+|`true` or `false`
+|`false`
+
+|char
+|16-bit Unicode character `'\u0000'` ~ `'\uffff'`
+|`'\u0000'`
+|===
+endsnippet
+
+# vim:ft=snippets:
