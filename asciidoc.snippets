@@ -7,7 +7,7 @@ priority -55
 
 # meta template {{{ #
 snippet meta "asciidoc meta header" b
-= ${1:`!p snip.rv = snip.basename or "untitled"`}
+=${1: `!p snip.rv = snip.basename or "untitled"`}
 ${2:v1.0}, `!v strftime("%Y-%m-%d")`
 :toc:
 :icons: font
