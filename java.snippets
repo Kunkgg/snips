@@ -10,28 +10,28 @@ priority -50
 # global python functions {{{1 #
 global !p
 def junit(snip):
-	if snip.opt("g:ultisnips_java_junit", "") == "3":
-		snip += ""
-	else:
-		snip.rv += "@Test\n\t"
+    if snip.opt("g:ultisnips_java_junit", "") == "3":
+        snip += ""
+    else:
+        snip.rv += "@Test\n\t"
 
 def nl(snip):
-	if snip.opt("g:ultisnips_java_brace_style", "") == "nl":
-		snip += ""
-	else:
-		snip.rv += " "
+    if snip.opt("g:ultisnips_java_brace_style", "") == "nl":
+        snip += ""
+    else:
+        snip.rv += " "
 def getArgs(group):
-	import re
-	word = re.compile('[a-zA-Z0-9><.]+ \w+')
-	return [i.split(" ") for i in word.findall(group) ]
+    import re
+    word = re.compile('[a-zA-Z0-9><.]+ \w+')
+    return [i.split(" ") for i in word.findall(group) ]
 
 def camel(word):
-	if not word: return ''
-	return word[0].upper() + word[1:]
+    if not word: return ''
+    return word[0].upper() + word[1:]
 
 def mixedCase(word):
-	if not word: return ''
-	return word[0].lower() + word[1:]
+    if not word: return ''
+    return word[0].lower() + word[1:]
 
 endglobal
 # }}} #
@@ -58,20 +58,20 @@ endsnippet
 # class {{{1 #
 snippet main "method (main)" b
 public static void main(String[] args)`!p nl(snip)`{
-	$0
+    $0
 }
 endsnippet
 
 snippet cl "class" b
-public class ${1:`!p
+public class${1: `!p
 snip.rv = snip.basename or "untitled"`} {
-	$0
+    $0
 }
 endsnippet
 
 snippet m  "method" b
 ${1:public} ${2:void} ${3:method}(${4:Type args}) {
-	$0
+    $0
 }
 
 endsnippet
@@ -80,26 +80,26 @@ snippet md "Method With javadoc" b
 /**
  * ${7:Short Description}`!p
 for i in getArgs(t[4]):
-	snip.rv += "\n\t * @param " + i[1] + " usage..."`
+    snip.rv += "\n\t * @param " + i[1] + " usage..."`
  *`!p
 if "throws" in t[5]:
-	snip.rv = "\n\t * @throws " + t[6]
+    snip.rv = "\n\t * @throws " + t[6]
 else:
-	snip.rv = ""``!p
+    snip.rv = ""``!p
 if not "void" in t[2]:
-	snip.rv = "\n\t * @return object"
+    snip.rv = "\n\t * @return object"
 else:
-	snip.rv = ""`
+    snip.rv = ""`
  **/
 ${1:public} ${2:void} ${3:method}($4) ${5:throws ${6:Exception} }{
-	$0
+    $0
 }
 endsnippet
 
 snippet cl-extends "class extends" b
 public class ${1:`!p
 snip.rv = snip.basename or "untitled"`} ${2:extends ${3:Parent} }${4:implements ${5:Interface} }{
-	$0
+    $0
 }
 endsnippet
 
@@ -109,7 +109,7 @@ endsnippet
 
 snippet abstract-class "abstract class" b
 abstract class ${1:className} {
-	${2://attributes and methods}
+    ${2://attributes and methods}
 }
 
 endsnippet
@@ -120,7 +120,7 @@ endsnippet
 
 snippet interface "interface" b
 interface ${1:`!p snip.rv = snip.basename or "untitled"`} ${2:extends ${3:Parent} }{
-	$0
+    $0
 }
 endsnippet
 
@@ -130,17 +130,17 @@ endsnippet
 
 snippet cn "Constructor" b
 public `!p snip.rv = snip.basename or "untitled"`(${1:}) {
-	$0
+    $0
 }
 endsnippet
 
 snippet ex-anonymous-class "Example for anonymous class" b
 class outerClass {
 
-	// defining anonymous class
-	object1 = new Type(parameterList) {
-		// body of the anonymous class
-	};
+    // defining anonymous class
+    object1 = new Type(parameterList) {
+        // body of the anonymous class
+    };
 }
 endsnippet
 
@@ -168,30 +168,30 @@ endsnippet
 # control flow {{{1 #
 snippet if "if" b
 if ($1)`!p nl(snip)`{
-	$0${VISUAL}
+    $0${VISUAL}
 }
 endsnippet
 
 snippet elif "else if"
 else if ($1)`!p nl(snip)`{
-	$0${VISUAL}
+    $0${VISUAL}
 }
 endsnippet
 
 snippet el "else" w
 else`!p nl(snip)`{
-	$0${VISUAL}
+    $0${VISUAL}
 }
 endsnippet
 snippet switch "switch" b
 switch ($1)`!p nl(snip)`{
-	case $2: $0
+    case $2: $0
 }
 endsnippet
 
 snippet case "case" b
 case $1:
-	$2
+    $2
 $0
 endsnippet
 # 1}}} #
@@ -199,31 +199,31 @@ endsnippet
 # loops {{{ #
 snippet while "while" b
 while ($1)`!p nl(snip)`{
-	$0
+    $0
 }
 endsnippet
 
 snippet do-while "do-while" b
 do {
-	$0
+    $0
 } while ($1);
 endsnippet
 
 snippet for "for" b
 for ($1; $2; $3)`!p nl(snip)`{
-	$0
+    $0
 }
 endsnippet
 
 snippet fore "for (each)" b
 for ($1 : $2)`!p nl(snip)`{
-	$0
+    $0
 }
 endsnippet
 
 snippet fori "for" b
 for (int ${1:i} = 0; $1 < ${2:10}; $1++)`!p nl(snip)`{
-	$0
+    $0
 }
 endsnippet
 # }}} loops #
@@ -231,51 +231,51 @@ endsnippet
 # exception {{{1 #
 snippet catch "catch" b
 catch (${1:Exception} ${2:e})`!p nl(snip)`{
-	$0
+    $0
 }
 endsnippet
 
 snippet try "try/catch" b
 try {
-	$1${VISUAL}
+    $1${VISUAL}
 } catch(${2:Exception} ${3:e}){
-	${4:e.printStackTrace();}
+    ${4:e.printStackTrace();}
 }
 
 endsnippet
 
 snippet try-finally "try/catch/finally" b
 try {
-	$1${VISUAL}
+    $1${VISUAL}
 } catch (${2:Exception} ${3:e}) {
-	${4:e.printStackTrace();}
+    ${4:e.printStackTrace();}
 } finally {
-	${5:finally block}
+    ${5:finally block}
 }
 
 endsnippet
 
 snippet try-muti "try catch mutiple exception" b
 try {
-	$1${VISUAL}
+    $1${VISUAL}
 } catch (${2:ExceptionType1} | ${3:ExceptionType2} ${4:e}) {
-	${5:e.printStackTrace();}
+    ${5:e.printStackTrace();}
 }
 
 endsnippet
 
 snippet try-resource "try with resource" b
 try (${1:resource declaration}) {
-	${2:use of the resource}
+    ${2:use of the resource}
 } catch (${3:Exception} ${4:e}) {
-	${5:e.printStackTrace();}
+    ${5:e.printStackTrace();}
 }
 
 endsnippet
 
 snippet throws "method throws" b
 ${1:accessModifier} ${2:void} ${3:methodName}(${4:args}) throws ${5:ExceptionType1, ExceptionType2 …} {
-	$0
+    $0
 }
 
 endsnippet
@@ -326,6 +326,7 @@ Iterator<${1:Integer}> ${2:iterName} = ${3:objName}.iterator();
 endsnippet
 # }}} collections #
 
+# generals {{{ #
 snippet pa "package" b
 package $0
 endsnippet
@@ -341,6 +342,93 @@ endsnippet
 snippet pf "printlf"  b
 System.out.printf($1);$0
 endsnippet
+# }}} generals #
+
+# JDBC {{{ #
+snippet jdbc-uitil "JDBC utils" b
+package ${1:com.oracle.tutorial.jdbc};
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.util.*;
+import java.io.*;
+import java.sql.BatchUpdateException;
+import java.sql.DatabaseMetaData;
+import java.sql.RowIdLifetime;
+import java.sql.SQLWarning;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+
+public class DataBaseUtilities {
+
+    public String dbms;
+    public String jarFile;
+    public String dbName;
+    public String userName;
+    public String password;
+    public String urlString;
+
+    private String driver;
+    private String serverName;
+    private int portNumber;
+    private Properties prop;
+
+public DataBaseUtilities(String propertiesFileName)
+        throws FileNotFoundException, IOException,
+        InvalidPropertiesFormatException {
+    super();
+    this.setProperties(propertiesFileName);
+}
+
+    public Connection getConnection(String userName, String password)
+            throws SQLException {
+        Connection conn = null;
+        Properties connectionProps = new Properties();
+        connectionProps.put("user", userName);
+        connectionProps.put("password", password);
+        if (this.dbms.equals("mysql")) {
+            conn = DriverManager.getConnection("jdbc:" + this.dbms + "://"
+                    + this.serverName + ":" + this.portNumber + "/",
+                    connectionProps);
+            conn.setCatalog(this.dbName);
+        } else if (this.dbms.equals("derby")) {
+            conn = DriverManager.getConnection(
+                    "jdbc:" + this.dbms + ":" + this.dbName + ";create=true",
+                    connectionProps);
+        }
+        return conn;
+    }
+}
+endsnippet
+
+snippet jdbc-query "JDBC query" b
+String query = "${1:select COF_NAME, SUP_ID, PRICE, SALES, TOTAL from COFFEES}";
+
+try (Statement stmt = con.createStatement();){
+    ResultSet rs = stmt.executeQuery(query);
+
+    while (rs.next()) {
+        ${2:String coffeeName = rs.getString("COF_NAME");
+        int supplierID = rs.getInt("SUP_ID");
+        float price = rs.getFloat("PRICE");
+        int sales = rs.getInt("SALES");
+        int total = rs.getInt("TOTAL");}
+    }
+
+} catch (SQLException e) {
+    System.out.println(e);
+}
+endsnippet
+# }}} JDBC #
 
 
-# vim:ft=snippets:
+# vim: ft=snippets:ts=4:sw=4:sts=4:expandtab:nocindent:smartindent:
