@@ -238,4 +238,12 @@ snippet table "example simple table" b
 |===
 endsnippet
 
+snippet table-csv "include csv table" b
+.${1:table title}
+[format="csv", options="header"]
+|===
+include::{includesdir}/${2:filename}.csv[]
+|===
+endsnippet
+
 # vim:ft=snippets:

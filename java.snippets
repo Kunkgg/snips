@@ -192,6 +192,7 @@ endsnippet
 snippet case "case" b
 case $1:
     $2
+    break;
 $0
 endsnippet
 # 1}}} #
@@ -343,92 +344,6 @@ snippet pf "printlf"  b
 System.out.printf($1);$0
 endsnippet
 # }}} generals #
-
-# JDBC {{{ #
-snippet jdbc-uitil "JDBC utils" b
-package ${1:com.oracle.tutorial.jdbc};
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-import java.util.*;
-import java.io.*;
-import java.sql.BatchUpdateException;
-import java.sql.DatabaseMetaData;
-import java.sql.RowIdLifetime;
-import java.sql.SQLWarning;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-
-public class DataBaseUtilities {
-
-    public String dbms;
-    public String jarFile;
-    public String dbName;
-    public String userName;
-    public String password;
-    public String urlString;
-
-    private String driver;
-    private String serverName;
-    private int portNumber;
-    private Properties prop;
-
-public DataBaseUtilities(String propertiesFileName)
-        throws FileNotFoundException, IOException,
-        InvalidPropertiesFormatException {
-    super();
-    this.setProperties(propertiesFileName);
-}
-
-    public Connection getConnection(String userName, String password)
-            throws SQLException {
-        Connection conn = null;
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", userName);
-        connectionProps.put("password", password);
-        if (this.dbms.equals("mysql")) {
-            conn = DriverManager.getConnection("jdbc:" + this.dbms + "://"
-                    + this.serverName + ":" + this.portNumber + "/",
-                    connectionProps);
-            conn.setCatalog(this.dbName);
-        } else if (this.dbms.equals("derby")) {
-            conn = DriverManager.getConnection(
-                    "jdbc:" + this.dbms + ":" + this.dbName + ";create=true",
-                    connectionProps);
-        }
-        return conn;
-    }
-}
-endsnippet
-
-snippet jdbc-query "JDBC query" b
-String query = "${1:select COF_NAME, SUP_ID, PRICE, SALES, TOTAL from COFFEES}";
-
-try (Statement stmt = con.createStatement();){
-    ResultSet rs = stmt.executeQuery(query);
-
-    while (rs.next()) {
-        ${2:String coffeeName = rs.getString("COF_NAME");
-        int supplierID = rs.getInt("SUP_ID");
-        float price = rs.getFloat("PRICE");
-        int sales = rs.getInt("SALES");
-        int total = rs.getInt("TOTAL");}
-    }
-
-} catch (SQLException e) {
-    System.out.println(e);
-}
-endsnippet
-# }}} JDBC #
 
 
 # vim: ft=snippets:ts=4:sw=4:sts=4:expandtab:nocindent:smartindent:

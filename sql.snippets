@@ -1,0 +1,147 @@
+# A valid snippet should starts with:
+#
+#       snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#       endsnippet
+#
+# Snippet options:
+#
+#       b - Beginning of line.
+#       i - In-word expansion.
+#       w - Word boundary.
+#       r - Regular expression
+#       e - Custom context snippet
+#       A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#       snippet emitter "emitter properties" b
+#       private readonly ${1} = new Emitter<$2>()
+#       public readonly ${1/^_(.*)/$1/}: Event<$2> = this.$1.event
+#       endsnippet
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+snippet createdb "create database" b
+CREATE DATABASE IF NOT EXISTS ${1:database};
+endsnippet
+
+snippet createtable "create table" b
+########################
+# Create ${1:tableName} table
+########################
+CREATE TABLE ${1:tableName}
+(
+dict_id                int       NOT NULL AUTO_INCREMENT,
+dict_name              char(50)  NOT NULL UNIQUE,
+dict_type_id           int       NULL ,
+dict_dbName            char(50)  NULL UNIQUE,
+dict_size              int       DEFAULT 0,
+dict_timestamp         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (dict_id)
+) ENGINE=InnoDB;
+endsnippet
+
+snippet addFK "add constraint foreign key" b
+ALTER TABLE ${1:tableA} ADD CONSTRAINT fk_${1:tableA}_${2:tableB}
+FOREIGN KEY (${3:foreignKey})
+REFERENCES  ${2:tableB} (${3:foreignKey});
+endsnippet
+
+snippet showtables "show table names" b
+SHOW TABLES LIKE '%${1:keyword}%';
+endsnippet
+
+snippet showFK "show foreign keys" b
+SELECT
+    TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,
+    REFERENCED_COLUMN_NAME
+FROM
+    INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE
+    REFERENCED_TABLE_SCHEMA = '${1:database}' AND
+    REFERENCED_TABLE_NAME = '${2:tableName}';
+endsnippet
+
+snippet select "a normal select" bw
+SELECT ${1:columnlist}
+FROM ${2:tableslist}
+WHERE ${3:conditions}
+endsnippet
+
+snippet cte "common table expression" b
+WITH ${1:cte_name} (${2:column_list}) AS (
+${3:query}
+)
+SELECT ${4:column_list} FROM ${1:cte_name} WHERE ${5:conditions};
+
+endsnippet
+
+snippet cte-recursive "recursive common table expression" b
+WITH RECURSIVE ${1:cte_name} AS (
+    ${2:initial_query  -- anchor member}
+    UNION ALL
+    ${3:recursive_query -- recursive member that references to the CTE name}
+)
+SELECT ${4:column_list} FROM ${1:cte_name};
+endsnippet
+
+snippet union "union" b
+UNION ${1:ALL}
+endsnippet
+
+snippet insert "insert a row into table" b
+INSERT ${6:IGNORE} INTO ${1:table}(${2:c1,c2,...})
+VALUES (${3:v1,v2,...});
+
+endsnippet
+
+snippet insert-multi "insert multiple rows into table" b
+INSERT ${6:IGNORE} INTO ${1:table}(${2:c1,c2,...})
+VALUES
+    (${3:v1,v2,...}),
+    (${4:v1,v2,...}),
+    (${5:v1,v2,...});
+endsnippet
+
+snippet insert-select "insert with select subquery" b
+INSERT ${6:IGNORE} INTO ${1:table_name}(${2:column_list})
+SELECT
+    ${3:select_column_list}
+FROM
+    ${4:another_table}
+WHERE
+    ${5:condition};
+${condition}
+${1:condition}
+endsnippet
+
+snippet update "update one or more rows" b
+UPDATE ${5:LOW_PRIORITY} ${6:IGNORE} ${1:table_name}
+SET
+    ${2:column_name1 = expr1,}
+    ${3:column_name2 = expr2,}
+WHERE
+    ${4:condition};
+endsnippet
+
+snippet delete "delete rows" b
+DELETE FROM ${1:table_name}
+WHERE ${2:condition};
+endsnippet
+
+snippet ondelete "on delete for foreignKey" bw
+ON DELETE ${1:CASCADE}
+endsnippet
+
+# SELECT
+#   TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,
+#   REFERENCED_COLUMN_NAME
+# FROM
+#   INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+# WHERE
+#   REFERENCED_TABLE_SCHEMA = 'dict';
+
+# vim: ft=snippets:ts=4:sw=4:sts=4:expandtab:nocindent:smartindent:
