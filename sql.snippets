@@ -24,37 +24,54 @@
 #
 # Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
 
+# create objects {{{ #
 snippet createdb "create database" b
 CREATE DATABASE IF NOT EXISTS ${1:database};
 endsnippet
 
+snippet dropdb "delete database" b
+DROP DATABASE IF EXISTS ${1:database};
+endsnippet
+
 snippet createtable "create table" b
 ########################
-# Create ${1:tableName} table
+# Create ${1:table_name} table
 ########################
-CREATE TABLE ${1:tableName}
-(
+CREATE TABLE IF NOT EXISTS ${1:table_name}(
+${2:column_1_definition,
+column_2_definition,
 dict_id                int       NOT NULL AUTO_INCREMENT,
 dict_name              char(50)  NOT NULL UNIQUE,
 dict_type_id           int       NULL ,
 dict_dbName            char(50)  NULL UNIQUE,
 dict_size              int       DEFAULT 0,
 dict_timestamp         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (dict_id)
-) ENGINE=InnoDB;
+...,}
+${3:table_constraints}
+PRIMARY KEY (${4:dict_id})
+) ENGINE=${5:InnoDB};
 endsnippet
 
-snippet addFK "add constraint foreign key" b
+snippet column "definition column" b
+${1:column_name} ${2:data_type}(${3:length}) ${4:[NOT NULL] [DEFAULT value] [AUTO_INCREMENT] column_constraint},
+endsnippet
+
+snippet primaryKey "primary key" b
+PRIMARY KEY (${1:col1,col2,...})
+endsnippet
+
+snippet foreignKey "constraint foreign key" b
 ALTER TABLE ${1:tableA} ADD CONSTRAINT fk_${1:tableA}_${2:tableB}
 FOREIGN KEY (${3:foreignKey})
 REFERENCES  ${2:tableB} (${3:foreignKey});
 endsnippet
+# }}} create objects #
 
 snippet showtables "show table names" b
 SHOW TABLES LIKE '%${1:keyword}%';
 endsnippet
 
-snippet showFK "show foreign keys" b
+snippet showFk "show foreign keys" b
 SELECT
     TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,
     REFERENCED_COLUMN_NAME
@@ -135,6 +152,65 @@ endsnippet
 snippet ondelete "on delete for foreignKey" bw
 ON DELETE ${1:CASCADE}
 endsnippet
+
+snippet replace "replace row" b
+REPLACE ${1:table_name}(${2:column_list})
+VALUES(${3:value_list});
+endsnippet
+
+snippet replace-set "replace row with set syntax" b
+REPLACE ${1:table_name}(${2:column_list})
+SET ${3:column1} = ${4:value1},
+    ${5:column2} = ${6:value2};
+endsnippet
+
+snippet preparedStmt "prepared statement" b
+PREPARE ${1:pstmt} FROM
+${2:'SELECT
+        productCode,
+        productName
+    FROM products
+    WHERE productCode = ?'};
+
+SET @${3:varName} = ${4:value};
+
+EXECUTE ${1:pstmt} USING @${3:varName};
+endsnippet
+
+snippet set-var "set variable" b
+SET @${1:varName} = ${2:value};
+endsnippet
+
+
+# transaction {{{ #
+
+snippet set-autocommit "set autocommit" b
+SET autocommit = ${1:0};
+endsnippet
+
+snippet transaction "transaction" b
+START TRANSACTION;
+
+${1:queries of transaction}
+
+COMMIT;
+
+endsnippet
+
+snippet rollback "rollback transaction" b
+ROLLBACK;
+endsnippet
+# }}} transaction #
+
+# lock and unlock table {{{ #
+snippet lock-table "lock table" b
+LOCK TABLES ${1:table_name} ${2:READ | WRITE};
+endsnippet
+
+snippet unlock "unlock table" b
+UNLOCK TABLES;
+endsnippet
+# }}} lock and unlock table #
 
 # SELECT
 #   TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,

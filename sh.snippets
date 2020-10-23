@@ -1,0 +1,358 @@
+# A valid snippet should starts with:
+#
+#		snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#		endsnippet
+#
+# Snippet options:
+#
+#		b - Beginning of line.
+#		i - In-word expansion.
+#		w - Word boundary.
+#		r - Regular expression
+#		e - Custom context snippet
+#		A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#		snippet emitter "emitter properties" b
+#		private readonly ${1} = new Emitter<$2>()
+#		public readonly ${1/^_(.*)/$1/}: Event<$2> = this.$1.event
+#		endsnippet
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+# Templates {{{ #
+# Template from https://bertvv.github.io/cheat-sheets/Bash.html
+snippet ! "template" b
+#!/bin/bash
+#
+# ${1:Description}
+# Author: gk07 <goukun07@gmail.com>
+#
+#/ Usage: SCRIPTNAME [OPTIONS]... [ARGUMENTS]...
+#/
+#/
+#/ OPTIONS
+#/   -h, --help
+#/                Print this help message
+#/
+#/ EXAMPLES
+#/
+
+
+#{{{ Bash settings
+# abort on nonzero exitstatus
+set -o errexit
+# abort on unbound variable
+set -o nounset
+# don't hide errors within pipes
+set -o pipefail
+#}}}
+#{{{ Variables
+readonly script_name=$(basename "\${0}")
+readonly script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
+
+#}}}
+
+main() {
+	# check_args "${@}"
+	:
+}
+
+#{{{ Helper functions
+
+
+
+#}}}
+
+main "${@}"
+endsnippet
+# }}} Templates #
+
+# heredoc {{{ #
+snippet heredoc "heredoc commonly" b
+${1:cmd} << ${2:DELIMITER}
+${3:docs}
+${2:DELIMITER}
+endsnippet
+
+snippet heredoc-no-interpolation "heredoc no interpolation" b
+${1:cmd} << ${2:DELIMITER}
+${3:docs}
+${2:DELIMITER}
+endsnippet
+
+snippet heredoc-pipe "heredoc with pipe" b
+${1:cmd} << ${2:DELIMITER} ${4:>/dev/null}
+${3:docs}
+${2:DELIMITER}
+endsnippet
+
+snippet heredoc-sudo "sudo heredoc with pipe" b
+sudo tee ${1:filename} << ${2:DELIMITER} ${4:>/dev/null}
+${3:docs}
+${2:DELIMITER}
+endsnippet
+
+# }}} heredoc #
+
+snippet temp "Tempfile" b
+${1:TMPFILE}="$(mktemp -t ${3:--suffix=${4:.SUFFIX}} ${2:tmpfile}.XXXXXX)"
+
+endsnippet
+
+snippet finish "Cleanup on exit" b
+finish() {
+	result=$?
+	${1:cleancodes}
+	exit ${result}
+}
+trap finish EXIT ERR
+endsnippet
+
+snippet f "Define function" b
+${1:function_name}() {
+	${2:echo "hello $1"}
+}
+endsnippet
+
+snippet if "if ..." b
+if ${2:[[ ${1:condition} ]]}; then
+	${0:${VISUAL}}
+endsnippet
+
+snippet elif "elif .. (elif)" b
+elif ${2:[[ ${1:condition} ]]}; then
+	${0:${VISUAL}}
+endsnippet
+
+snippet case "case .. (esac)" b
+case ${1:word} in
+	${2:pattern})
+		${0};;
+esac
+endsnippet
+
+# loops {{{ #
+snippet fori "Loop over files and directories" b
+for file in ${1:/etc/rc.*}; do
+	printf '%s\n' "$file"
+done
+endsnippet
+
+snippet loop-contents "Loop over the contents of a file" b
+while read -r line; do
+	printf '%s\n' "$line"
+done < "${1:filename}"
+endsnippet
+
+snippet foria "Loop array" b
+${1:arr}=(${2:apples oranges tomatoes})
+
+# Just elements.
+for element in "${${1:arr}[@]}"; do
+	printf '%s\n' "$element"
+done
+
+# Elements and index.
+for i in "${!${1:arr}[@]}"; do
+	printf '%s\n' "${${1:arr}[i]}"
+done
+endsnippet
+
+snippet forir "Loop over a range of numbers" b
+# Loop from 0-100 (no variable support).
+for i in {${1:0..100..5}}; do
+	printf '%s\n' "$i"
+done
+endsnippet
+
+snippet for "C-like loop" b
+for ((${1:i = 0} ; ${2:i < 100} ; ${3:i++})); do
+	${4:echo $i}
+done
+endsnippet
+
+snippet while "while loop" b
+while ${2:[[ ${1:condition} ]]}; do
+	${0:${VISUAL}}
+done
+endsnippet
+# }}} loops #
+
+# arguments {{{ #
+
+snippet checkargs "Function that checks command line arguments"
+# Check if command line arguments are valid
+check_args() {
+	if [ "${#}" -ne "1" ]; then
+		error "Expected 1 argument, got ${#}"
+		usage
+		exit 2
+	fi
+}
+
+endsnippet
+
+# }}} arguments #
+
+# print usage {{{ #
+snippet usage "Usage function"
+# Print usage message on stdout by parsing start of script comments
+usage() {
+	grep '^#/' "${script_dir}/${script_name}" | sed 's/^#\/\s*//'
+}
+
+endsnippet
+
+snippet usage2 "Usage function"
+# Print usage message on stdout
+usage() {
+cat << USAGE
+Usage: ${1:script_name} [OPTIONS]... [ARGS]...
+
+	${2:description}
+
+OPTIONS:${3:options}
+
+EXAMPLES:
+USAGE
+}
+endsnippet
+# }}} print usage #
+
+# logs {{{
+
+snippet logv "Variables for logging functions" b
+# Debug info ('on' to enable)
+readonly debug='on'
+endsnippet
+
+snippet logf "Functions for log messages" b
+# Usage: log [ARG]...
+#
+# Prints all arguments on the standard output stream
+log() {
+	printf '\e[0;33m[log  ] %s\e[0m\n' "${*}"
+}
+
+# Usage: debug [ARG]...
+#
+# Prints all arguments on the standard output stream,
+# if debug output is enabled
+debug() {
+	[ "\${debug}" != 'on' ] || printf '\e[0;36m[debug] %s\e[0m\n' "${*}"
+}
+
+# Usage: error [ARG]...
+#
+# Prints all arguments on the standard error stream
+error() {
+	printf '\e[0;31m[error] %s\e[0m\n' "${*}" 1>&2
+}
+
+endsnippet
+
+snippet die "Exit the script with an error message and exit status"
+# Usage: die MESSAGE
+# Prints the specified error message and exits with an error status
+die() {
+	error "${*}"
+	exit 1
+}
+endsnippet
+# }}} logs #
+
+# color print {{{ #
+snippet colors "Definition of colors"
+# Color definitions
+readonly reset='\e[0m'
+readonly black='\e[0;30m'
+readonly blue='\e[0;34m'
+readonly cyan='\e[0;36m'
+readonly green='\e[0;32m'
+readonly purple='\e[0;35m'
+readonly red='\e[0;31m'
+readonly white='\e[0;37m'
+readonly yellow='\e[0;33m'
+
+endsnippet
+snippet colorprint "printf with color" b
+${1:red}println() {
+	printf "${${1:red}}%s\e[0m\n" "${*}"
+}
+
+endsnippet
+
+# }}} color print #
+
+# util functions {{{ #
+snippet command-exits "Check command exists" bw
+command_exists() {
+	command -v "$@" > /dev/null 2>&1
+}
+endsnippet
+
+snippet get-distribution "Get Linux distribution" b
+get_distribution() {
+	lsb_dist=""
+	# Every system that we officially support has /etc/os-release
+	if [ -r /etc/os-release ]; then
+		lsb_dist="$(. /etc/os-release && echo "")"
+	fi
+	# Returning an empty string here should be alright since the
+	# case statements don't act unless you provide an actual value
+	echo ""
+}
+endsnippet
+
+# Usage: sudo_backupfile [ARG]...
+#
+# backup file with sudo
+snippet backup-file-sudo "backup file with sudo" bw
+sudo_backupfile() {
+	local FILE="\${1}"
+	local FILEBAK="\${FILE}.bak"
+
+	if [[ -f "\${FILEBAK}" ]]; then
+		FILEBAK = "\${FILEBAK}$(date "+%y%m%d%H%M")"
+	fi
+
+	sudo cp "\${FILE}" "\${FILEBAK}"
+
+	if (( $? == 0 )); then
+		log "Backuped \${FILE} => \${FILEBAK}"
+	fi
+}
+endsnippet
+
+snippet backup-file "backup file" bw
+backupfile() {
+	local FILE="\${1}"
+	local FILEBAK="\${FILE}.bak"
+
+	if [[ -f "\${FILEBAK}" ]]; then
+		FILEBAK = "\${FILEBAK}$(date "+%y%m%d%H%M")"
+	fi
+
+	cp "\${FILE}" "\${FILEBAK}"
+
+	if (( $? == 0 )); then
+		log "Backuped \${FILE} => \${FILEBAK}"
+	fi
+}
+endsnippet
+
+snippet checklatest "Check latest cmd run status" b
+if (( $? == 0 )); then
+	log "${1:Successed ...}"
+fi
+endsnippet
+
+# }}} util functions #
+
+# vim:ft=snippets:

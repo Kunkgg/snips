@@ -8,7 +8,8 @@ priority -55
 # meta template {{{ #
 snippet meta "asciidoc meta header" b
 =${1: `!p snip.rv = snip.basename or "untitled"`}
-${2:v1.0}, `!v strftime("%Y-%m-%d")`
+:author: Goukun <goukun07@gmail.com>
+:date: `!v strftime("%Y-%m-%d")`
 :toc:
 :icons: font
 :library: Asciidoctor
@@ -25,6 +26,9 @@ ${2:v1.0}, `!v strftime("%Y-%m-%d")`
 //:doctype: book
 //:sectids!:
 :plus: &#43;
+//:revealjsdir: ../../resources/reveal.js
+//:revealjs_theme: black
+// available themes: black beige blood league moon night serif simple sky solarized white
 
 // refs
 :url-github: https://github.com/Kunkgg
@@ -245,5 +249,51 @@ snippet table-csv "include csv table" b
 include::{includesdir}/${2:filename}.csv[]
 |===
 endsnippet
+
+# revealjs {{{ #
+snippet r-notes "revealjs notes" b
+[.notes]
+--
+* ${1:note item 1}
+* ${2:note item 2}
+--
+endsnippet
+
+snippet r-notitle "revealjs no title" b
+[%notitle]
+endsnippet
+
+snippet r-conceal "revealjs conceal" b
+[%conceal]
+endsnippet
+
+snippet r-step "revealjs fragments step" b
+[%step]
+endsnippet
+
+
+snippet rp-bg-image "revealjs page with a image background" b
+[%notitle]
+== ${1:Page Title}
+
+image::${2:bg.jpg}[background, size=${3:cover}]
+
+endsnippet
+
+snippet rp-bg-video "revealjs page with a video background" b
+[background-video="{imagesdir}/${2:bg.mp4}",background-video-loop=true,background-video-muted=${3:true}]
+== ${1:Page Title}
+endsnippet
+
+snippet r-refs "reference" b
+[.refs]
+--
+* ${1:Photo or other filetype} by ${2:https://example.com}[${3:Author}]
+* ${4:Another photo}
+* ${5:title}
+--
+endsnippet
+
+# }}} revealjs #
 
 # vim:ft=snippets:
